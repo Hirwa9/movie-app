@@ -71,6 +71,19 @@ interface MovieDetails {
   vote_count: number;
 }
 
+interface MovieCredits {
+  id: number;
+  cast: any[],
+  crew?: any[],
+}
+
+interface SimiralMovies {
+  page: number;
+  results: any[],
+  total_pages?: number,
+  total_results?: number,
+}
+
 interface TrendingCardProps {
   movie: any;
   index: number;
