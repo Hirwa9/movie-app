@@ -40,7 +40,7 @@ export const fetchMovieDetails = async (movieId: string): Promise<MovieDetails> 
 
         if (!response.ok) {
             // @ts-ignore
-            throw new Error('Failed to fetch movies details', response.statusText);
+            throw new Error('Failed to fetch movie details', response.statusText);
         }
 
         const data = await response.json();
@@ -50,7 +50,50 @@ export const fetchMovieDetails = async (movieId: string): Promise<MovieDetails> 
         console.log(error);
         throw error;
     }
+}
 
+// Fetch movie credits (Cast,Crew ...)
+export const fetchMovieCredits = async (movieId: string): Promise<MovieCredits> => {
+    try {
+        const response = await fetch(`${TMDB_CONFIG.BASE_URL}/movie/${movieId}/credits?language=en-US`, {
+            method: 'GET',
+            headers: TMDB_CONFIG.headers,
+        });
+
+        if (!response.ok) {
+            // @ts-ignore
+            throw new Error('Failed to fetch movie credits', response.statusText);
+        }
+
+        const data = await response.json();
+        return data;
+
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+// Fetch movie's similars
+export const fetchSimilarMovies = async (movieId: string): Promise<SimiralMovies> => {
+    try {
+        const response = await fetch(`${TMDB_CONFIG.BASE_URL}/movie/${movieId}/similar?language=en-US&page=1`, {
+            method: 'GET',
+            headers: TMDB_CONFIG.headers,
+        });
+
+        if (!response.ok) {
+            // @ts-ignore
+            throw new Error('Failed to fetch similar movies', response.statusText);
+        }
+
+        const data = await response.json();
+        return data;
+
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
 }
 
 // const url = 'https://api.themoviedb.org/3/trending/movie/day?language=en-US';
@@ -70,7 +113,7 @@ export const fetchMovieDetails = async (movieId: string): Promise<MovieDetails> 
 // Fetch trending movies API
 export const fetchTrendingMovies = async () => {
     try {
-        const response = await fetch(`${TMDB_CONFIG.BASE_URL}/trending/movie/day?language=en-US`, {
+        const response = await fetch(`${TMDB_CONFIG.BASE_URL}/trending/movie/day`, {
             method: 'GET',
             headers: TMDB_CONFIG.headers,
         });
@@ -92,14 +135,36 @@ export const fetchTrendingMovies = async () => {
 // Fetch upcoming movies API
 export const fetchUpcomingMovies = async () => {
     try {
-        const response = await fetch(`${TMDB_CONFIG.BASE_URL}/upcoming/movie/day?language=en-US?api_key=${TMDB_CONFIG.API_KEY}`, {
+        const response = await fetch(`${TMDB_CONFIG.BASE_URL}/movie/upcoming?page=1'`, {
             method: 'GET',
             headers: TMDB_CONFIG.headers,
         });
 
         if (!response.ok) {
             // @ts-ignore
-            throw new Error('Failed to fetch daily upcoming movies', response.statusText);
+            throw new Error('Failed to fetch upcoming movies', response.statusText);
+        }
+
+        const data = await response.json();
+        return data.results;
+
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+// Fetch top rated movies API
+export const fetchTopRatedMovies = async () => {
+    try {
+        const response = await fetch(`${TMDB_CONFIG.BASE_URL}/movie/top_rated?language=en-US&page=1'`, {
+            method: 'GET',
+            headers: TMDB_CONFIG.headers,
+        });
+
+        if (!response.ok) {
+            // @ts-ignore
+            throw new Error('Failed to fetch top rated movies', response.statusText);
         }
 
         const data = await response.json();
