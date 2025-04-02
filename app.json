@@ -2,6 +2,8 @@
   "expo": {
     "name": "Mobile movie app",
     "slug": "movie_app",
+    "privacy": "public",
+    "description": "A movie listing cross-platform application",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/logo.png",
@@ -36,6 +38,21 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "7d90d069-423f-4573-ba86-ca09fbf15731"
+      }
+    },
+    "owner": "hirwa9",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/7d90d069-423f-4573-ba86-ca09fbf15731"
     }
   }
 }
