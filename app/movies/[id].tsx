@@ -26,7 +26,6 @@ const MovieDetails = () => {
     // Get movies credits
     const { data: movieCredits, loading: movieCreditsLoading, error: movieCreditsError } =
         useFetch(() => fetchMovieCredits(id as string))
-    console.log(movieCredits?.cast.length);
 
     // Get similar movies
     const { data: similarMovies, loading: similarMoviesLoading, error: similarMoviesError } =
