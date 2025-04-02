@@ -1,17 +1,36 @@
-import { ActivityIndicator, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import React from 'react';
 import { router, useLocalSearchParams } from 'expo-router';
-import useFetch from '@/services/useFetch';
-import { fetchMovieDetails } from '@/services/api';
+
+// Resources
 import { icons } from '@/constants/icons';
 
+// Services
+import useFetch from '@/services/useFetch';
+import { fetchMovieCredits, fetchMovieDetails, fetchSimilarMovies } from '@/services/api';
+
+// Components
+import CastCard from '@/components/CastCard';
+import TrendingCard from '@/components/TrendingCard';
+
 const MovieDetails = () => {
+
     // Get movie id
     const { id } = useLocalSearchParams();
 
-    const { data: movie, loading: detailsLoading, error: detailsError } = useFetch(() => fetchMovieDetails(id as string))
+    // Get movies details
+    const { data: movie, loading: detailsLoading, error: detailsError } =
+        useFetch(() => fetchMovieDetails(id as string))
+    // console.log(movie);
 
-    console.log(movie);
+    // Get movies credits
+    const { data: movieCredits, loading: movieCreditsLoading, error: movieCreditsError } =
+        useFetch(() => fetchMovieCredits(id as string))
+    console.log(movieCredits?.cast.length);
+
+    // Get similar movies
+    const { data: similarMovies, loading: similarMoviesLoading, error: similarMoviesError } =
+        useFetch(() => fetchSimilarMovies(id as string))
 
     interface MovieInfoProps {
         label: string;
@@ -36,11 +55,11 @@ const MovieDetails = () => {
                     paddingBottom: 80,
                 }}
             >
-                {detailsLoading ? (
+                {detailsLoading || movieCreditsLoading || similarMoviesLoading ? (
                     <View className='flex-col min-h-[75vh] items-center'>
                         <ActivityIndicator size="large" color="#0000ff" className="my-auto" />
                     </View>
-                ) : !detailsError ? (
+                ) : !detailsError || !movieCreditsError || !similarMoviesError ? (
                     <>
                         <View className='h-[550px] max-h-[70vh]'>
                             <Image
@@ -77,13 +96,54 @@ const MovieDetails = () => {
                             </View>
                             <MovieInfo label='Production Companies' value={movie?.production_companies.map(c => c?.name).join(' - ') || 'N/A'} />
                         </View>
+
+                        {/* Cast */}
+                        <View className='mt-5 px-5'>
+                            <Text className='text-white font-bold text-xl'>
+                                Cast
+                            </Text>
+                            <FlatList
+                                className="flex-1 my-4"
+                                horizontal
+                                showsHorizontalScrollIndicator={false}
+                                ItemSeparatorComponent={() => <View className="w-4" />}
+                                data={movieCredits?.cast}
+
+                                renderItem={({ item }) => (
+                                    <CastCard {...item} />
+                                )}
+                                keyExtractor={(item) => item.id.toString()}
+                            />
+                        </View>
+
+                        {/* Top 20 trending movies */}
+                        {similarMovies && (
+                            <View className="pb-42 px-5">
+                                <Text className='text-white font-bold text-xl my-5'>
+                                    Similar movies
+                                </Text>
+                                <FlatList
+                                    className="mb-4 mt-2"
+                                    horizontal
+                                    showsHorizontalScrollIndicator={false}
+                                    ItemSeparatorComponent={() => <View className="w-4" />}
+                                    data={similarMovies?.results?.slice(0, 10)}
+                                    renderItem={({ item, index }) => (
+                                        <TrendingCard movie={item} index={index} />
+                                    )}
+                                    keyExtractor={(item, index) => `${item.id}_${index}`}
+                                />
+                            </View>
+                        )}
                     </>
                 ) : (
                     <Text className="text-red-500 px-5 py-3">
-                        Error: {detailsError?.message}
+                        Error: {detailsError?.message || movieCreditsError?.message || similarMoviesError?.message}
                     </Text>
                 )}
             </ScrollView>
+
+            {/* Back button */}
             <TouchableOpacity
                 className='absolute z-50 bottom-5 left-0 right-0 flex flex-row items-center justify-center gap-2 mx-5 bg-accent rounded-lg py-3.5'
                 onPress={() => {
