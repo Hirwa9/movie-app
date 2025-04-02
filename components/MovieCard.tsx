@@ -31,16 +31,12 @@ const MovieCard = ({ id, poster_path, title, vote_average, release_date }: Movie
                     <Text className='mt-1 text-xs text-light-300 font-medium'>
                         {(release_date?.split('-')[0])}
                     </Text>
-                    {/* <Text className='text-xs text-light-300 font-medium uppercase'>
+                    <Text className='text-xs text-light-300 font-medium uppercase'>
                         Movie
-                    </Text> */}
+                    </Text>
                 </View>
             </TouchableOpacity>
-
         </Link>
-        // <View>
-        //     <Text className='text-sm text-white'>MovieCard</Text>
-        // </View>
     )
 }
 
