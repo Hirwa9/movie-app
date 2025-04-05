@@ -1,6 +1,6 @@
-import { ActivityIndicator, FlatList, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, ScrollView, Text, View } from 'react-native';
 import React from 'react';
-import { router, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 
 // Resources
 import { icons } from '@/constants/icons';
@@ -12,6 +12,8 @@ import { fetchMovieCredits, fetchMovieDetails, fetchSimilarMovies } from '@/serv
 // Components
 import CastCard from '@/components/CastCard';
 import TrendingCard from '@/components/TrendingCard';
+import BackButton from '@/components/BackButton';
+import Header from '@/components/Header';
 
 const MovieDetails = () => {
 
@@ -31,6 +33,7 @@ const MovieDetails = () => {
     const { data: similarMovies, loading: similarMoviesLoading, error: similarMoviesError } =
         useFetch(() => fetchSimilarMovies(id as string))
 
+    // Movie info component
     interface MovieInfoProps {
         label: string;
         value?: string | number | null;
@@ -49,6 +52,7 @@ const MovieDetails = () => {
 
     return (
         <View className='bg-primary flex-1'>
+            <Header fixed />
             <ScrollView
                 contentContainerStyle={{
                     paddingBottom: 80,
@@ -60,6 +64,7 @@ const MovieDetails = () => {
                     </View>
                 ) : !detailsError || !movieCreditsError || !similarMoviesError ? (
                     <>
+                        {/* Movie poster */}
                         <View className='h-[550px] max-h-[70vh]'>
                             <Image
                                 source={{
@@ -68,6 +73,8 @@ const MovieDetails = () => {
                                 className='w-full h-full'
                             />
                         </View>
+
+                        {/* Movie main details */}
                         <View className='flex-col items-start justify-center mt-5 px-5'>
                             <Text className='text-white font-bold text-xl'>{movie?.title}</Text>
                             <View className='flex-row items-start gap-x-1 mt-2'>
@@ -116,7 +123,7 @@ const MovieDetails = () => {
                         </View>
 
                         {/* Top 20 trending movies */}
-                        {similarMovies && (
+                        {similarMovies && similarMovies?.results.length > 0 && (
                             <View className="pb-42 px-5">
                                 <Text className='text-white font-bold text-xl my-5'>
                                     Similar movies
@@ -143,19 +150,7 @@ const MovieDetails = () => {
             </ScrollView>
 
             {/* Back button */}
-            <TouchableOpacity
-                className='absolute z-50 bottom-5 left-0 right-0 flex flex-row items-center justify-center gap-2 mx-5 bg-accent rounded-lg py-3.5'
-                onPress={() => {
-                    if (router.canGoBack()) {
-                        router.back();
-                    } else {
-                        router.dismissTo('/');
-                    }
-                }}
-            >
-                <Image source={icons.arrow} className='size-5 rotate-180 mt-0.5' tintColor="#030014" />
-                <Text className='text-primary font-semibold text-base'>Go back</Text>
-            </TouchableOpacity>
+            <BackButton />
         </View>
     )
 }
