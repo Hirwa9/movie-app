@@ -74,6 +74,50 @@ export const fetchMovieCredits = async (movieId: string): Promise<MovieCredits> 
     }
 }
 
+// Fetch cast details
+export const fetchCastDetails = async (movieId: string): Promise<CastDetails> => {
+    try {
+        const response = await fetch(`${TMDB_CONFIG.BASE_URL}/person/${movieId}?language=en-US`, {
+            method: 'GET',
+            headers: TMDB_CONFIG.headers,
+        });
+
+        if (!response.ok) {
+            // @ts-ignore
+            throw new Error('Failed to fetch person details', response.statusText);
+        }
+
+        const data = await response.json();
+        return data;
+
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+// Fetch cast movie credits
+export const fetchCastMovieCredits = async (movieId: string): Promise<CastMovieCredits> => {
+    try {
+        const response = await fetch(`${TMDB_CONFIG.BASE_URL}/person/${movieId}/movie_credits?language=en-US`, {
+            method: 'GET',
+            headers: TMDB_CONFIG.headers,
+        });
+
+        if (!response.ok) {
+            // @ts-ignore
+            throw new Error('Failed to fetch person movie credits', response.statusText);
+        }
+
+        const data = await response.json();
+        return data;
+
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
 // Fetch movie's similars
 export const fetchSimilarMovies = async (movieId: string): Promise<SimiralMovies> => {
     try {
