@@ -3,6 +3,7 @@ import React from 'react';
 import { router, Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import { colors } from '@/constants/colors';
 
 interface TabIconProps {
     path: string;
@@ -62,7 +63,7 @@ const _Layout = () => (
                     <TabIcon
                         path='/'
                         focused={focused}
-                        icon={<Ionicons name="home-outline" size={24} color={focused ? "#151312" : "#fff"} />}
+                        icon={<Ionicons name="home-outline" size={24} color={focused ? colors.secondary : colors.white} />}
                         title="Home"
                     />
                 ),
@@ -77,7 +78,7 @@ const _Layout = () => (
                     <TabIcon
                         path='/search'
                         focused={focused}
-                        icon={<Ionicons name="search-outline" size={24} color={focused ? "#151312" : "#fff"} />}
+                        icon={<Ionicons name="search-outline" size={24} color={focused ? colors.secondary : colors.white} />}
                         title="Search"
                     />
                 ),
@@ -92,7 +93,7 @@ const _Layout = () => (
                     <TabIcon
                         path='/saved'
                         focused={focused}
-                        icon={<Ionicons name="bookmark-outline" size={24} color={focused ? "#151312" : "#fff"} />}
+                        icon={<Ionicons name="bookmark-outline" size={24} color={focused ? colors.secondary : colors.white} />}
                         title="Saved"
                     />
                 ),
@@ -107,7 +108,7 @@ const _Layout = () => (
                     <TabIcon
                         path='/profile'
                         focused={focused}
-                        icon={<AntDesign name="user" size={24} color={focused ? "#151312" : "#fff"} />}
+                        icon={<AntDesign name="user" size={24} color={focused ? colors.secondary : colors.white} />}
                         title="Profile"
                     />
                 ),
