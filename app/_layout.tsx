@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 
 import './global.css';
+import { colors } from '@/constants/colors';
 
 export default function RootLayout() {
   return (
@@ -17,10 +18,14 @@ export default function RootLayout() {
           name="movies/[id]"
           options={{ headerShown: false }}
         />
+        <Stack.Screen
+          name="cast/[id]"
+          options={{ headerShown: false }}
+        />
       </Stack>
       <StatusBar
-        hidden={true}
-        backgroundColor="#030014"
+        // hidden={true}
+        backgroundColor={colors.primary}
         style="light"
       />
     </SafeAreaView>
