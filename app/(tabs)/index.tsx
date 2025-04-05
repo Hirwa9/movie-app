@@ -3,7 +3,6 @@ import React from "react";
 import { useRouter } from "expo-router";
 
 // Resources
-import { images } from "@/constants/images";
 import { icons } from "@/constants/icons";
 
 // Services
@@ -15,6 +14,7 @@ import { fetchMovies, fetchTopRatedMovies, fetchTrendingMovies, fetchUpcomingMov
 import SearchBar from "@/components/SearchBar";
 import MovieCard from "@/components/MovieCard";
 import TrendingCard from "@/components/TrendingCard";
+import DotsPattern from "@/components/DotsPattern";
 
 export default function Index() {
   const router = useRouter();
@@ -37,9 +37,10 @@ export default function Index() {
   // console.log(upcomingMovies);
 
   return (
-    <View className="flex-1 w-full h-full bg-primary"
+    <View className="flex-1 w-full h-full bg-primary relative isolate"
     >
-      <Image source={images.bg} className="absolute w-full h-full z-0" />
+      {/* Background */}
+      {/* <DotsPattern /> */}
       {/* Page head */}
       <ScrollView className="min-w-[80%]">
         <Image source={icons.logo} className="w-12 h-10 mt-10 mb-5 mx-auto" />
