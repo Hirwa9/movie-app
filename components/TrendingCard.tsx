@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { View, Text, Image, Pressable } from 'react-native';
 import React from 'react';
 import { Link } from 'expo-router';
 import { images } from '@/constants/images';
@@ -9,14 +9,14 @@ const TrendingCard = ({ movie, index }: TrendingCardProps) => {
 
     return (
         <Link href={`/movies/${id}`} asChild>
-            <TouchableOpacity className='relative w-[65vw] min-w-[12rem] pl-5'>
+            <Pressable className='relative w-[65vw] min-w-[12rem] pl-5 active:scale-95 transition-transform duration-200' android_ripple={{ color: '#1a3a8a', borderless: true }}>
                 <Image
                     source={{
                         uri: poster_path ?
                             `https://image.tmdb.org/t/p/w500${poster_path}` :
                             'https://placehold.co/600x400/1a1a1a/ffffff.png'
                     }}
-                    className='w-full h-[40vh] min-h-[15rem] rounded-lg'
+                    className='w-full h-[40vh] min-h-[15rem] rounded-3xl'
                     resizeMode='cover'
                 />
                 <View className='absolute bottom-9 -left-2 px-2 py-1 rounded-4'>
@@ -28,7 +28,7 @@ const TrendingCard = ({ movie, index }: TrendingCardProps) => {
                     </MaskedView>
                 </View>
                 <Text className='text-sm font-bold mt-2 text-light-200' numberOfLines={2}>{title}</Text>
-            </TouchableOpacity>
+            </Pressable>
         </Link>
     )
 }
