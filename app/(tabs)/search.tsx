@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 // import { useRouter } from 'expo-router';
 
 // Resorces
-import { images } from '@/constants/images';
 import { icons } from '@/constants/icons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
@@ -15,6 +14,7 @@ import { updateSearchCount } from '@/services/appwrite';
 // Components
 import SearchBar from '@/components/SearchBar';
 import MovieCard from '@/components/MovieCard';
+import DotsPattern from '@/components/DotsPattern';
 
 const Search = () => {
     // const router = useRouter();
@@ -52,13 +52,13 @@ const Search = () => {
 
     return (
         <View className='flex-1 bg-primary'>
-            <Image source={images.bg} className='flex-1 absolute w-full z-0 ' resizeMode='cover' />
+            {/* Background */}
+            {/* <DotsPattern /> */}
             <FlatList
                 className="px-5"
-
                 ListHeaderComponent={
                     <>
-                        <View className="w-full flex-row items-center justify-center mt-3">
+                        <View className="w-full flex-row items-center justify-center mt-5">
                             <Image source={icons.logo} className="w-12 h-10" />
                         </View>
                         <View className="my-5">
