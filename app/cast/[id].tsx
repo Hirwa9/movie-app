@@ -106,7 +106,7 @@ const CastDetails = () => {
                                     ItemSeparatorComponent={() => <View className="w-4" />}
                                     data={personMovieCredits?.cast}
                                     renderItem={({ item, index }) => (
-                                        <TrendingCard movie={item} index={index} />
+                                        <TrendingCard movie={item} index={index} media_type={item?.media_type} />
                                     )}
                                     keyExtractor={(item, index) => `${item.id}_${index}`}
                                 />
