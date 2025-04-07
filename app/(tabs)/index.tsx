@@ -43,16 +43,7 @@ export default function Index() {
   // Get upcoming movies
   const { data: upcomingMovies, loading: upcomingLoading, error: upcomingError, refetch: upcomingMoviesRefetch } = useFetch(fetchUpcomingMovies);
 
-  console.log(tvSeries);
-
-  // Refresh functionality
-  const refetching = useCallback(() => {
-    refetchMovies();
-    tvSeriesRefetch();
-    trendingMoviesRefetch();
-    topRatedMoviesRefetch();
-    upcomingMoviesRefetch();
-  }, []);
+  // console.log(tvSeries);
 
   // Add media_type to movies and tv series
   useEffect(() => {
@@ -68,6 +59,15 @@ export default function Index() {
       });
     }
   }, [movies, tvSeries]);
+
+  // Refresh functionality
+  const refetching = useCallback(() => {
+    refetchMovies();
+    tvSeriesRefetch();
+    trendingMoviesRefetch();
+    topRatedMoviesRefetch();
+    upcomingMoviesRefetch();
+  }, []);
 
   return (
     <View className="flex-1 w-full h-full bg-primary relative isolate"
