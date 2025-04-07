@@ -7,7 +7,7 @@ import { icons } from '@/constants/icons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 // Services
-import { fetchMovies } from '@/services/api';
+import { fetchMovies, fetchTvSeries } from '@/services/api';
 import useFetch from '@/services/useFetch';
 import { updateSearchCount } from '@/services/appwrite';
 
@@ -22,18 +22,47 @@ const Search = () => {
     const [searchQuery, setSearchQuery] = useState('');
 
     // Destruct and rename movies data, from the useFetch hook
-    const { data: movies, loading: moviesLoading, error: moviesError, refetch: loadMovies, reset } = useFetch(
+    const { data: movies, loading: moviesLoading, error: moviesError, refetch: loadMovies, reset: resetMovies } = useFetch(
         () => fetchMovies({ query: searchQuery }), false
     );
+    // Destruct and rename movies data, from the useFetch hook
+    const { data: tvSeries, loading: tvSeriesLoading, error: tvSeriesError, refetch: loadTvSeries, reset: resetTvSeries } = useFetch(
+        () => fetchTvSeries({ query: searchQuery }), false
+    );
 
-    // Dynamic and debounced refetch
-    // when search query changes
+    // Add media_type to movies and tv series
     useEffect(() => {
-        const timeoutId = setTimeout(async () => {
+        if (movies?.length > 0 && movies?.[0]) {
+            movies?.forEach((movie: Movie) => {
+                movie.media_type = 'movie';
+            });
+        }
+
+        if (tvSeries?.length > 0 && tvSeries?.[0]) {
+            tvSeries?.forEach((tv: Movie) => {
+                tv.media_type = 'tv';
+            });
+        }
+    }, [movies, tvSeries]);
+
+    console.log(tvSeries);
+
+    // Combine and sort movies and tv series data
+    const combinedSearchResults = [...(movies || []), ...(tvSeries || [])];
+    const sortedSearchResults = combinedSearchResults.sort((a, b) => b?.popularity - a?.popularity);
+
+    // Debounced refetch when search query changes
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
             if (searchQuery.trim()) {
-                await loadMovies();
+                // Refetch movies and tv series using a promise
+                Promise.all([loadMovies(), loadTvSeries()])
+                    .catch((error) => {
+                        console.error('Error fetching data:', error);
+                    });
             } else {
-                reset();
+                resetMovies();
+                resetTvSeries();
             }
         }, 700);
 
@@ -71,11 +100,11 @@ const Search = () => {
                             />
                         </View>
 
-                        {moviesLoading ? (
+                        {moviesLoading || tvSeriesLoading ? (
                             <View className='flex-col min-h-[50vh] items-center'>
                                 <ActivityIndicator size="large" color="#0000ff" className="my-auto" />
                             </View>
-                        ) : !moviesError ? (
+                        ) : !moviesError || !tvSeriesError ? (
                             <>
                                 {searchQuery.trim() && movies?.length > 0 && (
                                     <Text className="text-xl text-white font-bold">
@@ -92,7 +121,7 @@ const Search = () => {
                     </>
                 }
                 ListEmptyComponent={
-                    !moviesLoading && !moviesError ? (
+                    !moviesLoading && !moviesError && !tvSeriesLoading && !tvSeriesError ? (
                         <View className='mt-10 px-5'>
                             {searchQuery.trim() ? (
                                 // No results
@@ -104,13 +133,14 @@ const Search = () => {
                                 // Initial
                                 <View className='items-center mt-20'>
                                     <MaterialCommunityIcons name="movie-search" size={60} color="#c084fc" className="mb-8" />
-                                    <Text className='text-center text-gray-300 max-w-[75%]'>Go ahead and find your wishlist movies.</Text>
+                                    <Text className='text-center text-gray-300 max-w-[75%]'>Go ahead and find your wishlist movies and tv shows.</Text>
                                 </View>
                             )}
                         </View>
                     ) : null
                 }
-                data={movies}
+                data={sortedSearchResults}
+                // data={tvSeries}
                 renderItem={({ item }) => (
                     <MovieCard {...item} />
                 )}
