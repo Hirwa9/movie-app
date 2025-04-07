@@ -3,10 +3,9 @@ import React from 'react'
 import { Link } from 'expo-router';
 import { icons } from '@/constants/icons';
 
-const MovieCard = ({ id, poster_path, title, name, vote_average, release_date, media_type }: Movie) => {
+const MovieCard = ({ id, poster_path, title, name, vote_average, release_date, first_air_date, media_type }: Movie) => {
 
     return (
-        // <Link href={`/movies/${id}`} asChild className='mb-3'>
         <Link href={media_type === 'movie' ? `/movies/${id}` : `/tvSerie/${id}`} asChild className='mb-3'>
             <TouchableOpacity className='w-[30%]'>
                 <View className='w-full border-b-4 border-purple-950'>
@@ -29,11 +28,12 @@ const MovieCard = ({ id, poster_path, title, name, vote_average, release_date, m
                 </View>
                 <View className='flex-row items-center justify-between mt-1'>
                     <Text className='text-xs text-light-300 font-medium'>
-                        {(release_date?.split('-')[0])}
+                        {media_type === 'movie' ? release_date?.split('-')[0] : first_air_date?.split('-')[0]}
                     </Text>
                     <Text className='text-xs text-light-300 font-medium uppercase'>
                         {
-                            media_type === 'movie' ? 'Movie' : 'TV Series'
+                            media_type === 'movie' ? 'Movie'
+                                : media_type === 'tv' ? 'Series' : ''
                         }
                     </Text>
                 </View>
