@@ -126,14 +126,23 @@ const Search = () => {
                             {searchQuery.trim() ? (
                                 // No results
                                 <View className='items-center mt-20'>
-                                    <MaterialCommunityIcons name="movie-open-off-outline" size={60} color="#fca5a5" className="mb-8" />
-                                    <Text className='text-center text-gray-300 max-w-[75%]'>No movies found. You can try something else.</Text>
+                                    <MaterialCommunityIcons name="movie-open-off-outline" size={120} color="#fca5a5" className="mb-8" />
+                                    <View className='max-w-[85%]'>
+                                        <Text className='text-center text-gray-300 text-lg mb-3'>
+                                            Oops! No results found.
+                                        </Text>
+                                        <Text className='text-center text-gray-400 text-[1rem]'>
+                                            Try refining your search or using a different keyword!
+                                        </Text>
+                                    </View>
                                 </View>
                             ) : (
                                 // Initial
                                 <View className='items-center mt-20'>
-                                    <MaterialCommunityIcons name="movie-search" size={60} color="#c084fc" className="mb-8" />
-                                    <Text className='text-center text-gray-300 max-w-[75%]'>Go ahead and find your wishlist movies and tv shows.</Text>
+                                    <MaterialCommunityIcons name="movie-search" size={120} color="#c084fc" className="mb-8" />
+                                    <Text className='text-center text-gray-300 text-[1rem] max-w-[85%]'>
+                                        Looking for something to watch? Start exploring movies and TV shows now!
+                                    </Text>
                                 </View>
                             )}
                         </View>
