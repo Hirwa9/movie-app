@@ -19,6 +19,10 @@ export default function RootLayout() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
+          name="tvSerie/[id]"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
           name="cast/[id]"
           options={{ headerShown: false }}
         />
