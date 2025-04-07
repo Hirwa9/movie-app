@@ -135,7 +135,7 @@ const MovieDetails = () => {
                                     ItemSeparatorComponent={() => <View className="w-4" />}
                                     data={similarMovies?.results?.slice(0, 10)}
                                     renderItem={({ item, index }) => (
-                                        <TrendingCard movie={item} index={index} />
+                                        <TrendingCard movie={item} index={index} media_type={item?.media_type} />
                                     )}
                                     keyExtractor={(item, index) => `${item.id}_${index}`}
                                 />
