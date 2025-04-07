@@ -1,5 +1,5 @@
-import { ActivityIndicator, FlatList, Image, ScrollView, Text, View } from "react-native";
-import React from "react";
+import { ActivityIndicator, FlatList, Image, RefreshControl, ScrollView, Text, View } from "react-native";
+import React, { useCallback, useEffect } from "react";
 import { useRouter } from "expo-router";
 
 // Resources
@@ -7,7 +7,7 @@ import { icons } from "@/constants/icons";
 
 // Services
 import useFetch from "@/services/useFetch";
-import { fetchMovies, fetchTopRatedMovies, fetchTrendingMovies, fetchUpcomingMovies } from "@/services/api";
+import { fetchMovies, fetchTopRatedMovies, fetchTrendingMovies, fetchTvSeries, fetchUpcomingMovies } from "@/services/api";
 // import { getTrendingMovies } from "@/services/appwrite";
 
 // Components
@@ -19,22 +19,55 @@ import DotsPattern from "@/components/DotsPattern";
 export default function Index() {
   const router = useRouter();
 
-  // Destruct and rename movies data, from the useFetch hook
-  const { data: movies, loading: moviesLoading, error: moviesError } = useFetch(
+  /**
+   * Destruct and rename data, obtained from the useFetch hook
+   */
+
+  // Get tv movies
+  const { data: movies, loading: moviesLoading, error: moviesError, refetch: refetchMovies } = useFetch(
     () => fetchMovies({ query: '' })
+  );
+
+  // Get tv series
+  const { data: tvSeries, loading: tvSeriesLoading, error: tvSeriesError, refetch: tvSeriesRefetch } = useFetch(
+    () => fetchTvSeries({ query: '' })
   );
 
   // Get trending movies
   // const { data: trendingMovies, loading: trendingLoading, error: trendingError } = useFetch(getTrendingMovies);
-  const { data: trendingMovies, loading: trendingLoading, error: trendingError } = useFetch(fetchTrendingMovies);
+  const { data: trendingMovies, loading: trendingLoading, error: trendingError, refetch: trendingMoviesRefetch } = useFetch(fetchTrendingMovies);
 
   // Get top rated movies
-  const { data: topratedMovies, loading: topratedLoading, error: topratedError } = useFetch(fetchTopRatedMovies);
+  const { data: topratedMovies, loading: topratedLoading, error: topratedError, refetch: topRatedMoviesRefetch } = useFetch(fetchTopRatedMovies);
 
   // Get upcoming movies
-  const { data: upcomingMovies, loading: upcomingLoading, error: upcomingError } = useFetch(fetchUpcomingMovies);
+  const { data: upcomingMovies, loading: upcomingLoading, error: upcomingError, refetch: upcomingMoviesRefetch } = useFetch(fetchUpcomingMovies);
 
-  // console.log(upcomingMovies);
+  console.log(tvSeries);
+
+  // Refresh functionality
+  const refetching = useCallback(() => {
+    refetchMovies();
+    tvSeriesRefetch();
+    trendingMoviesRefetch();
+    topRatedMoviesRefetch();
+    upcomingMoviesRefetch();
+  }, []);
+
+  // Add media_type to movies and tv series
+  useEffect(() => {
+    if (movies?.length > 0 && movies?.[0]) {
+      movies?.forEach((movie: Movie) => {
+        movie.media_type = 'movie';
+      });
+    }
+
+    if (tvSeries?.length > 0 && tvSeries?.[0]) {
+      tvSeries?.forEach((tv: Movie) => {
+        tv.media_type = 'tv';
+      });
+    }
+  }, [movies, tvSeries]);
 
   return (
     <View className="flex-1 w-full h-full bg-primary relative isolate"
@@ -45,13 +78,13 @@ export default function Index() {
       <ScrollView className="min-w-[80%]">
         <Image source={icons.logo} className="w-12 h-10 mt-10 mb-5 mx-auto" />
 
-        {moviesLoading || trendingLoading || upcomingLoading ? (
+        {moviesLoading || trendingLoading || upcomingLoading || tvSeriesLoading ? (
           <View className='flex-col min-h-[50vh] items-center'>
             <ActivityIndicator size="large" color="#0000ff" className="my-auto" />
           </View>
-        ) : moviesError || trendingError || upcomingError ? (
+        ) : moviesError || trendingError || upcomingError || tvSeriesError ? (
           <Text className='text-red-500 px-5 py-3'>
-            Error : {moviesError?.message || trendingError?.message || upcomingError?.message}
+            Error : {moviesError?.message || trendingError?.message || upcomingError?.message || tvSeriesError?.message}
           </Text>
         ) : (
           <View className="flex-1 mt-5">
@@ -88,9 +121,15 @@ export default function Index() {
                   // }
 
                   renderItem={({ item, index }) => (
-                    <TrendingCard movie={item} index={index} />
+                    <TrendingCard movie={item} index={index} media_type={item?.media_type} />
                   )}
                   keyExtractor={(item, index) => `${item.id}_${index}`}
+                  refreshControl={
+                    <RefreshControl
+                      refreshing={trendingLoading}
+                      onRefresh={refetching}
+                    />
+                  }
                 />
               </View>
             )}
@@ -121,6 +160,48 @@ export default function Index() {
                     paddingBottom: 10,
                   }}
                   showsVerticalScrollIndicator={false}
+                  refreshControl={
+                    <RefreshControl
+                      refreshing={moviesLoading}
+                      onRefresh={refetching}
+                    />
+                  }
+                />
+              </View>
+            )}
+
+            {/* Latest TV series */}
+            {tvSeries && (
+              <View className="pb-42 px-5">
+                <Text className="text-xl text-white font-bold mt-5 mb-3">
+                  TV series
+                </Text>
+
+                <FlatList
+                  className="flex-1 mt-2"
+                  data={tvSeries}
+                  renderItem={({ item }) => (
+                    <MovieCard {...item} />
+                  )}
+                  keyExtractor={(item) => item.id.toString()}
+                  numColumns={3}
+                  columnWrapperStyle={{
+                    justifyContent: 'flex-start',
+                    gap: 20,
+                    paddingRight: 5,
+                    marginBottom: 10
+                  }}
+                  scrollEnabled={false}
+                  contentContainerStyle={{
+                    paddingBottom: 10,
+                  }}
+                  showsVerticalScrollIndicator={false}
+                  refreshControl={
+                    <RefreshControl
+                      refreshing={tvSeriesLoading}
+                      onRefresh={refetching}
+                    />
+                  }
                 />
               </View>
             )}
@@ -140,9 +221,15 @@ export default function Index() {
                   data={upcomingMovies}
 
                   renderItem={({ item, index }) => (
-                    <TrendingCard movie={item} index={index} />
+                    <TrendingCard movie={item} index={index} media_type={item?.media_type} />
                   )}
                   keyExtractor={(item, index) => `${item.id}_${index}`}
+                  refreshControl={
+                    <RefreshControl
+                      refreshing={upcomingLoading}
+                      onRefresh={refetching}
+                    />
+                  }
                 />
               </View>
             )}
