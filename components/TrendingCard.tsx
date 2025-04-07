@@ -4,11 +4,11 @@ import { Link } from 'expo-router';
 import { images } from '@/constants/images';
 import MaskedView from '@react-native-masked-view/masked-view';
 
-const TrendingCard = ({ movie, index }: TrendingCardProps) => {
+const TrendingCard = ({ movie, index, media_type }: TrendingCardProps) => {
     const { id, poster_path, title } = movie;
 
     return (
-        <Link href={`/movies/${id}`} asChild>
+        <Link href={media_type === 'movie' ? `/movies/${id}` : `/tvSerie/${id}`} asChild>
             <Pressable className='relative w-[65vw] min-w-[12rem] pl-5 active:scale-95 transition-transform duration-200' android_ripple={{ color: '#1a3a8a', borderless: true }}>
                 <Image
                     source={{
