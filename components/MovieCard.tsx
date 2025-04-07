@@ -3,9 +3,11 @@ import React from 'react'
 import { Link } from 'expo-router';
 import { icons } from '@/constants/icons';
 
-const MovieCard = ({ id, poster_path, title, vote_average, release_date }: Movie) => {
+const MovieCard = ({ id, poster_path, title, name, vote_average, release_date, media_type }: Movie) => {
+
     return (
-        <Link href={`/movies/${id}`} asChild className='mb-3'>
+        // <Link href={`/movies/${id}`} asChild className='mb-3'>
+        <Link href={media_type === 'movie' ? `/movies/${id}` : `/tvSerie/${id}`} asChild className='mb-3'>
             <TouchableOpacity className='w-[30%]'>
                 <View className='w-full border-b-4 border-purple-950'>
                     <Image
@@ -18,7 +20,7 @@ const MovieCard = ({ id, poster_path, title, vote_average, release_date }: Movie
                         resizeMode='cover'
                     />
                 </View>
-                <Text className='mt-2 text-sm font-bold text-white' numberOfLines={1}>{title}</Text>
+                <Text className='mt-2 text-sm font-bold text-white' numberOfLines={1}>{media_type === 'movie' ? title : name}</Text>
                 <View className='flex-row items-center justify-start gap-1'>
                     <Image source={icons.star} className='size-4 ' />
                     <Text className='text-xs text-white/50 font-bold uppercase'>
@@ -30,7 +32,9 @@ const MovieCard = ({ id, poster_path, title, vote_average, release_date }: Movie
                         {(release_date?.split('-')[0])}
                     </Text>
                     <Text className='text-xs text-light-300 font-medium uppercase'>
-                        Movie
+                        {
+                            media_type === 'movie' ? 'Movie' : 'TV Series'
+                        }
                     </Text>
                 </View>
             </TouchableOpacity>
